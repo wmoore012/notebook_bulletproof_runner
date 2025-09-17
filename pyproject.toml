@@ -1,0 +1,44 @@
+[tool.poetry]
+name = "icat-notebook-runner"
+version = "0.1.0"
+description = "Process-isolated notebook cell runner that returns status/result/error/time"
+authors = ["J Smash <you@example.com>"]
+license = "Apache-2.0"
+readme = "README.md"
+packages = [{ include = "icat_notebook_runner", from = "src" }]
+
+[tool.poetry.dependencies]
+python = "^3.12"
+psutil = { version = "^5.9.0", optional = true }
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.2.0"
+pytest-cov = "^4.0.0"
+black = "^24.4.2"
+isort = "^5.13.2"
+ruff = "^0.4.7"
+mypy = "^1.10.0"
+pre-commit = "^3.7.1"
+psutil = "^5.9.0"
+types-psutil = "^5.9.0"
+bandit = "^1.7.0"
+
+[tool.poetry.extras]
+monitoring = ["psutil"]
+
+[tool.black]
+line-length = 100
+
+[tool.isort]
+profile = "black"
+
+[tool.ruff]
+line-length = 100
+
+[tool.mypy]
+strict = true
+packages = ["icat_notebook_runner"]
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"

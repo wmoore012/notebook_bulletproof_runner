@@ -1,3 +1,6 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2024 MusicScope
+
 """
 Comprehensive tests for icat-notebook-runner
 
@@ -9,11 +12,12 @@ Tests cover real-world notebook scenarios including:
 - Process isolation verification
 """
 
-import time
-import os
 import multiprocessing
+import os
 import tempfile
+import time
 from typing import Any, Dict, List
+
 from icat_notebook_runner import run_safe
 
 
@@ -340,8 +344,8 @@ def test_multiple_timeouts():
 
 def test_concurrent_execution():
     """Test that multiple executions can run concurrently"""
-    import threading
     import queue
+    import threading
 
     results_queue = queue.Queue()
 

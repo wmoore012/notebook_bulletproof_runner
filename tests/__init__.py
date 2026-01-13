@@ -1,0 +1,4 @@
+# SPDX-License-Identifier: MIT
+# Copyright (c) 2025 Perday CatalogLAB™
+
+"""Tests for process-isolated-runner."""

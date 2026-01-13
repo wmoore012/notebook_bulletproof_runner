@@ -1,8 +1,8 @@
-# SPDX-License-Identifier: MIT
-# Copyright (c) 2024 MusicScope
+# SPDX - License - Identifier: MIT
+# Copyright (c) 2025 Perday CatalogLAB™
 
 """
-Custom exceptions for icat-notebook-runner module.
+Custom exceptions for icat - notebook - runner module.
 
 This module provides comprehensive error handling with specific exception types
 for different failure scenarios, enabling precise error handling and debugging.
@@ -10,23 +10,23 @@ for different failure scenarios, enabling precise error handling and debugging.
 
 from __future__ import annotations
 
-from typing import Any, Dict, Optional
+from typing import Any
 
 
 class IcatNotebookRunnerError(Exception):
-    """Base exception for all icat-notebook-runner errors."""
+    """Base exception for all icat - notebook - runner errors."""
 
     def __init__(
         self,
         message: str,
-        details: Optional[Dict[str, Any]] = None,
-        suggestion: Optional[str] = None,
+        details: dict[str, Any] | None = None,
+        suggestion: str | None = None,
     ) -> None:
         """
         Initialize the exception with detailed error information.
 
         Args:
-            message: Human-readable error message
+            message: Human - readable error message
             details: Additional error context and debugging information
             suggestion: Suggested solution or next steps
         """
@@ -53,10 +53,10 @@ class ValidationError(IcatNotebookRunnerError):
     """Raised when input validation fails."""
 
     def __init__(
-        self, field: str, value: Any, expected: str, suggestion: Optional[str] = None
+        self, field: str, value: Any, expected: str, suggestion: str | None = None
     ) -> None:
         """
-        Initialize validation error with field-specific information.
+        Initialize validation error with field - specific information.
 
         Args:
             field: Name of the field that failed validation
@@ -75,7 +75,9 @@ class ValidationError(IcatNotebookRunnerError):
 class ConfigurationError(IcatNotebookRunnerError):
     """Raised when configuration is invalid or missing."""
 
-    def __init__(self, config_key: str, issue: str, suggestion: Optional[str] = None) -> None:
+    def __init__(
+        self, config_key: str, issue: str, suggestion: str | None = None
+    ) -> None:
         """
         Initialize configuration error.
 
@@ -98,8 +100,8 @@ class ResourceError(IcatNotebookRunnerError):
         self,
         resource: str,
         issue: str,
-        current_usage: Optional[str] = None,
-        suggestion: Optional[str] = None,
+        current_usage: str | None = None,
+        suggestion: str | None = None,
     ) -> None:
         """
         Initialize resource error.
@@ -128,7 +130,7 @@ class OperationError(IcatNotebookRunnerError):
         operation: str,
         reason: str,
         retry_possible: bool = False,
-        suggestion: Optional[str] = None,
+        suggestion: str | None = None,
     ) -> None:
         """
         Initialize operation error.
@@ -140,7 +142,11 @@ class OperationError(IcatNotebookRunnerError):
             suggestion: How to resolve the operation failure
         """
         message = f"Operation '{operation}' failed: {reason}"
-        details = {"operation": operation, "reason": reason, "retry_possible": retry_possible}
+        details = {
+            "operation": operation,
+            "reason": reason,
+            "retry_possible": retry_possible,
+        }
         super().__init__(message, details, suggestion)
         self.operation = operation
         self.reason = reason
@@ -152,13 +158,15 @@ class ProcessExecutionError(OperationError):
 
     def __init__(
         self,
-        exit_code: Optional[int] = None,
-        stdout: Optional[str] = None,
-        stderr: Optional[str] = None,
-        suggestion: Optional[str] = None,
+        exit_code: int | None = None,
+        stdout: str | None = None,
+        stderr: str | None = None,
+        suggestion: str | None = None,
     ) -> None:
         reason = (
-            f"Process exited with code {exit_code}" if exit_code else "Process execution failed"
+            f"Process exited with code {exit_code}"
+            if exit_code
+            else "Process execution failed"
         )
         super().__init__("process_execution", reason, suggestion=suggestion)
         self.exit_code = exit_code
@@ -170,10 +178,15 @@ class TimeoutError(ResourceError):
     """Raised when operation times out."""
 
     def __init__(
-        self, timeout_seconds: float, operation: str = "execution", suggestion: Optional[str] = None
+        self,
+        timeout_seconds: float,
+        operation: str = "execution",
+        suggestion: str | None = None,
     ) -> None:
         issue = f"Operation timed out after {timeout_seconds}s"
-        super().__init__("time", issue, suggestion=suggestion or "Try increasing the timeout value")
+        super().__init__(
+            "time", issue, suggestion=suggestion or "Try increasing the timeout value"
+        )
         self.timeout_seconds = timeout_seconds
         self.operation = operation
 
@@ -182,12 +195,15 @@ class MemoryLimitError(ResourceError):
     """Raised when memory limit is exceeded."""
 
     def __init__(
-        self, limit_mb: int, used_mb: Optional[float] = None, suggestion: Optional[str] = None
+        self, limit_mb: int, used_mb: float | None = None, suggestion: str | None = None
     ) -> None:
         issue = f"Memory limit of {limit_mb}MB exceeded"
         current_usage = f"{used_mb:.1f}MB" if used_mb else None
         super().__init__(
-            "memory", issue, current_usage, suggestion or "Try increasing memory_limit_mb parameter"
+            "memory",
+            issue,
+            current_usage,
+            suggestion or "Try increasing memory_limit_mb parameter",
         )
         self.limit_mb = limit_mb
         self.used_mb = used_mb
